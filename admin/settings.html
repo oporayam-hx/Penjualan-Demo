@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan — SembakoMart Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <span class="sidebar-logo">🌾</span>
+        <div>
+          <span class="sidebar-title">SembakoMart</span>
+          <span class="sidebar-subtitle">Panel Penjual</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li>
+          <a href="dashboard.html">📦 Kelola Produk</a>
+        </li>
+        <li class="active">
+          <a href="settings.html">⚙️ Pengaturan</a>
+        </li>
+        <li>
+          <a href="../index.html">🏪 Kembali ke Toko</a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="handleLogout()">🚪 Keluar</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <div>
+          <h1>⚙️ Pengaturan Toko</h1>
+          <p>Atur metode pembayaran dan pengiriman yang tersedia di toko Anda.</p>
+        </div>
+      </header>
+
+      <section class="admin-card-table" style="padding:1.5rem;">
+        <form id="settingsForm">
+          <h3>Metode Pembayaran</h3>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:center;">
+            <div>
+              <label class="form-label">Provider</label>
+              <select id="provider" class="form-input">
+                <option value="xendit">Xendit</option>
+                <option value="midtrans">Midtrans</option>
+                <option value="duitku">Duitku</option>
+              </select>
+            </div>
+            <div>
+              <label class="form-label">Mode</label>
+              <select id="mode" class="form-input">
+                <option value="sandbox">Sandbox</option>
+                <option value="production">Production</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+            <label><input type="checkbox" id="m_qris"> QRIS</label>
+            <label><input type="checkbox" id="m_gopay"> GoPay</label>
+            <label><input type="checkbox" id="m_dana"> DANA</label>
+            <label><input type="checkbox" id="m_ovo"> OVO</label>
+            <label><input type="checkbox" id="m_bank"> Transfer Bank</label>
+          </div>
+
+          <div style="margin-top:16px;">
+            <label class="form-label">Webhook Secret (server-side)</label>
+            <input id="webhook_secret" class="form-input" placeholder="(opsional)" />
+            <div style="font-size:0.85rem; color:var(--admin-text-light); margin-top:6px;">Catatan: simpan rahasia webhook di server. Ini akan disimpan di `data/settings.json`.</div>
+          </div>
+
+          <h3 style="margin-top:14px;">Metode Pengiriman</h3>
+          <div id="shippingList"></div>
+
+          <div style="margin-top:10px; display:flex; gap:12px; align-items:center;">
+            <button type="button" id="addShippingBtn" class="btn-admin-secondary">➕ Tambah Metode Pengiriman</button>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <label class="form-label" style="margin:0;">Free Shipping Threshold</label>
+              <input id="freeThreshold" class="form-input" style="width:160px;" type="number" min="0" />
+            </div>
+          </div>
+
+          <div style="margin-top:18px; display:flex; gap:12px;">
+            <input id="adminKey" class="form-input" placeholder="Admin Key (required)" style="width:300px;" />
+            <button class="btn-admin-primary" type="submit">💾 Simpan Pengaturan</button>
+            <button type="button" class="btn-admin-secondary" id="resetBtn">Reset ke Default</button>
+          </div>
+
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

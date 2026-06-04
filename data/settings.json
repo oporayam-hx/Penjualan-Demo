@@ -1,0 +1,34 @@
+{
+  "adminKey": "sembako-admin",
+  "payment": {
+    "provider": "xendit",
+    "mode": "sandbox",
+    "enabled_methods": {
+      "qris": true,
+      "gopay": true,
+      "dana": true,
+      "ovo": true,
+      "bank_transfer": true
+    },
+    "webhook_secret": "",
+    "public": {
+      "enabled_methods": {
+        "qris": true,
+        "gopay": true,
+        "dana": true,
+        "ovo": true,
+        "bank_transfer": true
+      }
+    }
+  },
+  "shipping": {
+    "methods": [
+      { "id": "express", "name": "Pengiriman Ekspres", "fee": 0, "estimate": "1-3 jam", "free_above": 100000 },
+      { "id": "same", "name": "Pengiriman Hari Ini", "fee": 15000, "estimate": "3-5 jam", "free_above": 0 },
+      { "id": "regular", "name": "Reguler", "fee": 8000, "estimate": "1-2 hari kerja", "free_above": 0 },
+      { "id": "pickup", "name": "Ambil di Toko", "fee": 0, "estimate": "Siap dalam 30 menit", "free_above": 0 }
+    ],
+    "default": "express",
+    "free_shipping_threshold": 100000
+  }
+}

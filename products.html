@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katalog Produk Sembako — SembakoMart</title>
+  <meta name="description" content="Temukan ribuan produk sembako berkualitas. Beras, minyak goreng, gula, bumbu dapur, minuman dan lainnya dengan harga terbaik.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/products.css">
+</head>
+<body>
+  <!-- Announcement -->
+  <div class="announcement">
+    🎉 Gratis ongkir untuk pembelian di atas <span>Rp 100.000</span> • Belanja sekarang & hemat lebih banyak!
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🌾</div>
+      <div class="nav-logo-text">
+        <span class="brand">SembakoMart</span>
+        <span class="tagline">Segar & Terpercaya</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="products.html" class="active">Produk</a></li>
+      <li><a href="products.html?cat=promo">Promo</a></li>
+      <li><a href="index.html#about">Tentang Kami</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div class="nav-search-wrap">
+        <span class="nav-search-icon">🔍</span>
+        <input type="text" class="nav-search" id="navSearchInput" placeholder="Cari produk..." />
+      </div>
+      <a href="cart.html" class="cart-btn" id="cartNavBtn">
+        🛒 Keranjang
+        <span class="cart-count hidden" id="cartCount">0</span>
+      </a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+  
+  <div class="mobile-menu" id="mobileMenu" style="display:none; background:var(--dark); padding:1rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+    <ul style="display:flex; flex-direction:column; gap:1rem;">
+      <li><a href="index.html" style="color:rgba(255,255,255,0.75); font-size:0.95rem; font-weight:500;">🏠 Beranda</a></li>
+      <li><a href="products.html" style="color:white; font-size:0.95rem; font-weight:600;">📦 Produk</a></li>
+      <li><a href="cart.html" style="color:rgba(255,255,255,0.75); font-size:0.95rem; font-weight:500;">🛒 Keranjang</a></li>
+    </ul>
+  </div>
+
+  <!-- Page Banner -->
+  <div class="page-banner">
+    <h1>🏪 Katalog Produk</h1>
+    <p>Temukan semua kebutuhan pokok Anda di sini</p>
+    <div class="breadcrumb">
+      <a href="index.html">Beranda</a>
+      <span>›</span>
+      <span>Produk</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="products-page">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- Categories -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">📂 Kategori</div>
+        <div class="cat-list" id="sidebarCats">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Price Filter -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">💰 Harga</div>
+        <div class="price-filter">
+          <div class="price-range-display">
+            <span id="priceMin">Rp 0</span>
+            <span id="priceMax">Rp 200.000</span>
+          </div>
+          <input type="range" class="price-slider" id="priceSlider" min="0" max="200000" step="5000" value="200000">
+        </div>
+      </div>
+
+      <!-- Sort -->
+      <div class="sidebar-card">
+        <div class="sidebar-title">🔃 Urutkan</div>
+        <div class="sort-options">
+          <label class="sort-option">
+            <input type="radio" name="sort" value="default" checked> Paling Relevan
+          </label>
+          <label class="sort-option">
+            <input type="radio" name="sort" value="price-asc"> Harga Terendah
+          </label>
+          <label class="sort-option">
+            <input type="radio" name="sort" value="price-desc"> Harga Tertinggi
+          </label>
+          <label class="sort-option">
+            <input type="radio" name="sort" value="rating"> Rating Tertinggi
+          </label>
+          <label class="sort-option">
+            <input type="radio" name="sort" value="newest"> Terbaru
+          </label>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Products Main -->
+    <div class="products-main">
+      <!-- Toolbar -->
+      <div class="products-toolbar">
+        <div class="toolbar-left">
+          <span class="results-count" id="resultsCount">Menampilkan <strong>0</strong> produk</span>
+          <div id="activeFilterTag" style="display:none;" class="active-filter-tag">
+            <span id="activeFilterText"></span>
+            <span class="filter-remove" onclick="clearCategoryFilter()" title="Hapus filter">✕</span>
+          </div>
+        </div>
+        <div class="toolbar-right">
+          <div class="search-box">
+            <span>🔍</span>
+            <input type="text" id="productSearch" placeholder="Cari di sini..." />
+          </div>
+          <div class="view-toggle">
+            <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Grid view">⊞</button>
+            <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="List view">☰</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Container -->
+      <div class="products-grid" id="productsContainer">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <script src="js/main.js"></script>
+  <script src="js/products.js"></script>
+</body>
+</html>

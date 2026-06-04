@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Penjual — SembakoMart Admin</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <!-- Admin Layout -->
+  <div class="admin-layout">
+    
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-brand">
+        <span class="sidebar-logo">🌾</span>
+        <div>
+          <span class="sidebar-title">SembakoMart</span>
+          <span class="sidebar-subtitle">Panel Penjual</span>
+        </div>
+      </div>
+      <ul class="sidebar-menu">
+        <li class="active">
+          <a href="dashboard.html">
+            <span>📦</span>
+            <span>Kelola Produk</span>
+          </a>
+        </li>
+        <li>
+          <a href="../index.html">
+            <span>🏪</span>
+            <span>Kembali ke Toko</span>
+          </a>
+        </li>
+      </ul>
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="handleLogout()">
+          <span>🚪</span> <span>Keluar</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Section -->
+    <main class="admin-main">
+      
+      <!-- Top Header -->
+      <header class="admin-header">
+        <div class="admin-title-section">
+          <h1>📦 Kelola Produk</h1>
+          <p>Tambahkan, edit, atau hapus produk sembako di toko Anda</p>
+        </div>
+        <button class="btn-add-product" onclick="openProductModal()">
+          <span>➕</span> Tambah Produk Baru
+        </button>
+      </header>
+
+      <!-- Stats Grid -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color:#E0F2FE; color:#0284C7;">🛒</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Produk</span>
+            <span class="stat-value" id="statTotalProducts">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color:#DCFCE7; color:#15803D;">📈</div>
+          <div class="stat-info">
+            <span class="stat-label">Produk Custom</span>
+            <span class="stat-value" id="statCustomProducts">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color:#FEF3C7; color:#B45309;">🌾</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Kategori</span>
+            <span class="stat-value" id="statTotalCategories">8</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background-color:#F3E8FF; color:#6B21A8;">🛍️</div>
+          <div class="stat-info">
+            <span class="stat-label">Total Pesanan</span>
+            <span class="stat-value" id="statTotalOrders">0</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Table Section -->
+      <section class="admin-card-table">
+        <!-- Toolbar -->
+        <div class="table-header-toolbar">
+          <div class="search-filter-wrap">
+            <input type="text" class="form-input admin-search-input" id="searchProduct" placeholder="Cari nama produk..." oninput="filterTable()">
+            <select class="admin-select-filter" id="filterCategory" onchange="filterTable()">
+              <option value="semua">Semua Kategori</option>
+              <option value="beras">Beras & Sereal</option>
+              <option value="minyak">Minyak</option>
+              <option value="gula">Gula & Madu</option>
+              <option value="bumbu">Bumbu Dapur</option>
+              <option value="tepung">Tepung</option>
+              <option value="minuman">Minuman</option>
+              <option value="kaleng">Makanan Kaleng</option>
+              <option value="kebersihan">Kebersihan</option>
+            </select>
+          </div>
+          <div style="font-size:0.82rem; color:var(--admin-text-light);">
+            Menampilkan <strong id="productCount">0</strong> produk
+          </div>
+        </div>
+
+        <!-- Responsive Table -->
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Produk</th>
+                <th>Harga</th>
+                <th>Stok</th>
+                <th>Berat</th>
+                <th>Label</th>
+                <th style="width:100px; text-align:right;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminProductsTableBody">
+              <!-- JS Rendered -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Form Modal (Tambah / Edit) -->
+  <div class="modal-overlay" id="productModal" onclick="handleModalOverlayClick(event)">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalTitle">Tambah Produk Baru</h3>
+        <button class="modal-close" onclick="closeProductModal()">✕</button>
+      </div>
+      <form id="productForm" onsubmit="saveProduct(event)">
+        <!-- Input ID tersembunyi untuk proses Edit -->
+        <input type="hidden" id="editProductId">
+
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Nama Produk <span style="color:var(--admin-danger);">*</span></label>
+              <input type="text" class="form-input" id="prodName" placeholder="Contoh: Beras Rojo Lele" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kategori <span style="color:var(--admin-danger);">*</span></label>
+              <select class="form-input" id="prodCat" required>
+                <option value="beras">Beras & Sereal</option>
+                <option value="minyak">Minyak</option>
+                <option value="gula">Gula & Madu</option>
+                <option value="bumbu">Bumbu Dapur</option>
+                <option value="tepung">Tepung</option>
+                <option value="minuman">Minuman</option>
+                <option value="kaleng">Makanan Kaleng</option>
+                <option value="kebersihan">Kebersihan</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Harga Jual (Rp) <span style="color:var(--admin-danger);">*</span></label>
+              <input type="number" class="form-input" id="prodPrice" placeholder="Contoh: 15000" min="0" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Harga Coret / Asli (Rp) <span style="color:var(--admin-text-light); font-weight:normal;">(Opsional)</span></label>
+              <input type="number" class="form-input" id="prodOriginalPrice" placeholder="Contoh: 18000" min="0">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Stok <span style="color:var(--admin-danger);">*</span></label>
+              <input type="number" class="form-input" id="prodStock" placeholder="Contoh: 100" min="0" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ukuran / Berat <span style="color:var(--admin-danger);">*</span></label>
+              <input type="text" class="form-input" id="prodWeight" placeholder="Contoh: 1 kg, 500 ml, isi 3" required>
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Emoji Produk <span style="color:var(--admin-danger);">*</span></label>
+              <input type="text" class="form-input" id="prodEmoji" placeholder="Contoh: 🌾, 🫙, 🧂" maxlength="4" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Foto Produk <span style="color:var(--admin-text-light); font-weight:normal;">(Upload File / Gambar)</span></label>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <input type="file" class="form-input" id="prodImageFile" accept="image/*" onchange="handleImageUpload(event)" style="padding:6px 10px;">
+                <input type="hidden" id="prodImage">
+              </div>
+              <div id="imagePreviewContainer" style="margin-top: 8px; display: none; align-items: center; gap: 8px;">
+                <img id="prodImagePreview" src="" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--admin-border);">
+                <button type="button" onclick="clearImageUpload()" style="background:none; border:none; color:var(--admin-danger); font-size:0.8rem; cursor:pointer; font-weight:600;">❌ Hapus</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Label Promo</label>
+            <select class="form-input" id="prodBadge">
+              <option value="">Tidak Ada</option>
+              <option value="promo">Promo (Diskon)</option>
+              <option value="best">Terlaris (Best Seller)</option>
+              <option value="new">Produk Baru</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Deskripsi Produk <span style="color:var(--admin-danger);">*</span></label>
+            <textarea class="form-input" id="prodDesc" placeholder="Jelaskan detail produk di sini..." rows="3" required></textarea>
+          </div>
+
+          <div style="display:flex; gap:20px; align-items:center; margin-top:0.5rem;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" id="prodFeatured"> Unggulan (Tampil di Beranda)
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:0.88rem; cursor:pointer;">
+              <input type="checkbox" id="prodIsNew"> Produk Baru (Tag Baru)
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-admin-secondary" onclick="closeProductModal()">Batal</button>
+          <button type="submit" class="btn-admin-primary">💾 Simpan Produk</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/main.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

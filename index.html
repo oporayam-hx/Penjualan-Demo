@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SembakoMart — Toko Sembako Online Terpercaya</title>
+  <meta name="description" content="SembakoMart - Belanja kebutuhan pokok online dengan harga terjangkau. Beras, minyak, gula, bumbu dapur dan lebih banyak produk tersedia. Pesan sekarang, kirim hari ini!">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <style>
+    /* Page-specific overrides */
+    .page-wrap {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    main {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+
+    <!-- Announcement Strip -->
+    <div class="announcement">
+      🎉 Gratis ongkir untuk pembelian di atas <span>Rp 100.000</span> • Belanja sekarang & hemat lebih banyak! 🛒
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+      <a href="index.html" class="nav-logo">
+        <div class="nav-logo-icon">🌾</div>
+        <div class="nav-logo-text">
+          <span class="brand">SembakoMart</span>
+          <span class="tagline">Segar & Terpercaya</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Beranda</a></li>
+        <li><a href="products.html">Produk</a></li>
+        <li><a href="products.html?cat=promo">Promo</a></li>
+        <li><a href="#about">Tentang Kami</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div class="nav-search-wrap">
+          <span class="nav-search-icon">🔍</span>
+          <input type="text" class="nav-search" id="navSearchInput" placeholder="Cari produk..." />
+        </div>
+        <a href="cart.html" class="cart-btn" id="cartNavBtn">
+          🛒 Keranjang
+          <span class="cart-count hidden" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu" style="display:none; background:var(--dark); padding:1rem 1.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+      <ul style="display:flex; flex-direction:column; gap:1rem;">
+        <li><a href="index.html" style="color:white; font-size:0.95rem; font-weight:600;">🏠 Beranda</a></li>
+        <li><a href="products.html" style="color:rgba(255,255,255,0.75); font-size:0.95rem; font-weight:500;">📦 Produk</a></li>
+        <li><a href="products.html?cat=promo" style="color:rgba(255,255,255,0.75); font-size:0.95rem; font-weight:500;">🏷️ Promo</a></li>
+        <li><a href="cart.html" style="color:rgba(255,255,255,0.75); font-size:0.95rem; font-weight:500;">🛒 Keranjang</a></li>
+      </ul>
+      <div style="margin-top:1rem;">
+        <input type="text" placeholder="Cari produk..." style="width:100%; padding:10px 16px; border-radius:50px; border:1px solid rgba(255,255,255,0.2); background:rgba(255,255,255,0.1); color:white; font-family:var(--font); font-size:0.9rem; outline:none;" />
+      </div>
+    </div>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-content">
+          <div class="hero-text">
+            <div class="hero-badge">
+              <span class="dot"></span>
+              Gratis Ongkir Se-Kota Hari Ini
+            </div>
+            <h1 class="hero-title">
+              Belanja <span>Sembako</span><br>
+              Mudah & Hemat
+            </h1>
+            <p class="hero-desc">
+              Dapatkan kebutuhan pokok sehari-hari dengan harga terbaik. Produk segar, pengiriman cepat, pembayaran mudah via QRIS & transfer bank.
+            </p>
+            <div class="hero-actions">
+              <a href="products.html" class="btn-primary">
+                🛍️ Belanja Sekarang
+              </a>
+              <a href="products.html?cat=promo" class="btn-outline">
+                🏷️ Lihat Promo
+              </a>
+            </div>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <h3>500+</h3>
+                <p>Produk Tersedia</p>
+              </div>
+              <div class="hero-stat">
+                <h3>10rb+</h3>
+                <p>Pelanggan Puas</p>
+              </div>
+              <div class="hero-stat">
+                <h3>4.9★</h3>
+                <p>Rating Toko</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-visual">
+            <div class="hero-img-wrap">
+              <div class="hero-img-bg">🌾</div>
+              <div class="hero-float-card card-1">
+                <div class="card-icon">🏷️</div>
+                <div>
+                  <div style="font-size:0.7rem; color:var(--text-light); font-weight:400;">Promo Hari Ini</div>
+                  <div>Diskon s.d 40%!</div>
+                </div>
+              </div>
+              <div class="hero-float-card card-2">
+                <div class="card-icon">✅</div>
+                <div>
+                  <div style="font-size:0.7rem; color:var(--text-light); font-weight:400;">Terima QRIS</div>
+                  <div>Bayar Mudah & Aman</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Strip -->
+      <div class="features-strip">
+        <div class="features-grid">
+          <div class="feature-item">
+            <div class="feature-icon">🚚</div>
+            <div class="feature-text">
+              <h4>Pengiriman Cepat</h4>
+              <p>Sampai hari yang sama</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">💳</div>
+            <div class="feature-text">
+              <h4>Bayar via QRIS</h4>
+              <p>Semua e-wallet diterima</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🌿</div>
+            <div class="feature-text">
+              <h4>Produk Segar</h4>
+              <p>Langsung dari sumber terpercaya</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🔒</div>
+            <div class="feature-text">
+              <h4>Belanja Aman</h4>
+              <p>Jaminan uang kembali 100%</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <section class="section" id="categories">
+        <div class="section-header fade-in">
+          <span class="section-label">Jelajahi</span>
+          <h2 class="section-title">Kategori <span>Produk</span></h2>
+          <p class="section-sub">Temukan semua kebutuhan pokok rumah tangga Anda dalam satu tempat</p>
+        </div>
+        <div class="categories-grid fade-in" id="categoriesGrid">
+          <!-- Diisi oleh JS -->
+        </div>
+      </section>
+
+      <!-- Featured Products -->
+      <section class="section" id="featured">
+        <div class="section-header fade-in">
+          <span class="section-label">Terlaris</span>
+          <h2 class="section-title">Produk <span>Unggulan</span></h2>
+          <p class="section-sub">Pilihan produk terbaik dengan harga spesial untuk Anda</p>
+        </div>
+        <div class="products-grid fade-in" id="featuredProducts">
+          <!-- Diisi oleh JS -->
+        </div>
+        <div style="text-align:center; margin-top:2.5rem;">
+          <a href="products.html" class="btn-primary">Lihat Semua Produk →</a>
+        </div>
+      </section>
+
+      <!-- Promo Banners -->
+      <section class="promo-section fade-in">
+        <div class="promo-grid">
+          <div class="promo-card promo-card-1">
+            <div class="promo-text">
+              <p class="label">Spesial Ramadan</p>
+              <h3>Hemat hingga<br>40% Diskon!</h3>
+              <p>Belanja produk pilihan & nikmati harga spesial</p>
+              <a href="products.html?cat=promo" class="btn-white">Belanja Sekarang →</a>
+            </div>
+            <div class="promo-emoji">🌙</div>
+          </div>
+          <div class="promo-card promo-card-2">
+            <div class="promo-text">
+              <p class="label">Beli 2 Gratis 1</p>
+              <h3>Promo Minyak<br>Goreng Hari Ini</h3>
+              <p>Terbatas! Dapatkan minyak goreng premium gratis</p>
+              <a href="products.html?cat=minyak" class="btn-white" style="color:var(--secondary-dark);">Klaim Promo →</a>
+            </div>
+            <div class="promo-emoji">🫙</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- New Products -->
+      <section class="section" id="new-products">
+        <div class="section-header fade-in">
+          <span class="section-label">Baru Masuk</span>
+          <h2 class="section-title">Produk <span>Terbaru</span></h2>
+          <p class="section-sub">Koleksi terbaru yang baru saja kami tambahkan untuk Anda</p>
+        </div>
+        <div class="products-grid fade-in" id="newProducts">
+          <!-- Diisi oleh JS -->
+        </div>
+      </section>
+
+      <!-- About / Trust Section -->
+      <section style="padding:4rem 2rem; background:var(--bg-card);" id="about">
+        <div style="max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;">
+          <div class="fade-in">
+            <span class="section-label">Tentang Kami</span>
+            <h2 class="section-title" style="text-align:left; margin-top:0.5rem;">Kenapa Pilih<br><span>SembakoMart?</span></h2>
+            <p style="color:var(--text-light); line-height:1.8; margin-bottom:1.5rem;">
+              Kami hadir untuk memudahkan Anda mendapatkan kebutuhan pokok sehari-hari dengan harga yang terjangkau dan kualitas terjamin. Sudah dipercaya lebih dari 10.000 keluarga Indonesia.
+            </p>
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:44px; height:44px; background:rgba(45,106,79,0.1); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">✅</div>
+                <div>
+                  <div style="font-weight:700; font-size:0.9rem; color:var(--dark);">Produk Terjamin Kualitasnya</div>
+                  <div style="font-size:0.8rem; color:var(--text-light);">Setiap produk melalui seleksi ketat sebelum dijual</div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:44px; height:44px; background:rgba(242,166,90,0.1); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">🚀</div>
+                <div>
+                  <div style="font-weight:700; font-size:0.9rem; color:var(--dark);">Pengiriman Super Cepat</div>
+                  <div style="font-size:0.8rem; color:var(--text-light);">Pesan sebelum jam 12 siang, terima hari ini juga</div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:44px; height:44px; background:rgba(82,183,136,0.1); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">💳</div>
+                <div>
+                  <div style="font-weight:700; font-size:0.9rem; color:var(--dark);">Pembayaran Mudah via QRIS</div>
+                  <div style="font-size:0.8rem; color:var(--text-light);">GoPay, OVO, Dana, Shopee Pay, dan semua e-wallet</div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:44px; height:44px; background:rgba(239,68,68,0.1); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">🛡️</div>
+                <div>
+                  <div style="font-weight:700; font-size:0.9rem; color:var(--dark);">Garansi Uang Kembali</div>
+                  <div style="font-size:0.8rem; color:var(--text-light);">Tidak puas? Kami kembalikan uang Anda 100%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fade-in" style="display:flex; flex-direction:column; gap:1.2rem;">
+            <div style="background:linear-gradient(135deg, var(--primary), var(--primary-light)); border-radius:var(--radius-lg); padding:2rem; color:white; text-align:center;">
+              <div style="font-size:3rem; margin-bottom:0.5rem;">🌾</div>
+              <h3 style="font-size:1.8rem; font-weight:800;">10.000+</h3>
+              <p style="opacity:0.8; font-size:0.9rem;">Keluarga Telah Berbelanja</p>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;">
+              <div style="background:var(--bg); border-radius:var(--radius-md); padding:1.5rem; text-align:center; border:1px solid var(--border);">
+                <div style="font-size:2rem; margin-bottom:0.4rem;">📦</div>
+                <h4 style="font-size:1.3rem; font-weight:800; color:var(--dark);">500+</h4>
+                <p style="font-size:0.78rem; color:var(--text-light);">Produk Tersedia</p>
+              </div>
+              <div style="background:var(--bg); border-radius:var(--radius-md); padding:1.5rem; text-align:center; border:1px solid var(--border);">
+                <div style="font-size:2rem; margin-bottom:0.4rem;">⭐</div>
+                <h4 style="font-size:1.3rem; font-weight:800; color:var(--dark);">4.9/5</h4>
+                <p style="font-size:0.78rem; color:var(--text-light);">Rating Kepuasan</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section class="section fade-in">
+        <div class="section-header">
+          <span class="section-label">Ulasan</span>
+          <h2 class="section-title">Kata Pelanggan <span>Kami</span></h2>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem;" id="testimonials">
+          <!-- Diisi JS -->
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="nav-logo" style="margin-bottom:1rem;">
+            <div class="nav-logo-icon">🌾</div>
+            <div class="nav-logo-text">
+              <span class="brand">SembakoMart</span>
+              <span class="tagline">Segar & Terpercaya</span>
+            </div>
+          </div>
+          <p>Toko sembako online terpercaya yang menghadirkan kebutuhan pokok berkualitas dengan harga terjangkau langsung ke rumah Anda.</p>
+          <div class="footer-socials">
+            <div class="social-btn" title="WhatsApp">📱</div>
+            <div class="social-btn" title="Instagram">📷</div>
+            <div class="social-btn" title="Facebook">👍</div>
+            <div class="social-btn" title="TikTok">🎵</div>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Belanja</h4>
+          <ul>
+            <li><a href="products.html">Semua Produk</a></li>
+            <li><a href="products.html?cat=beras">Beras & Sereal</a></li>
+            <li><a href="products.html?cat=minyak">Minyak Goreng</a></li>
+            <li><a href="products.html?cat=gula">Gula & Pemanis</a></li>
+            <li><a href="products.html?cat=bumbu">Bumbu Dapur</a></li>
+            <li><a href="products.html?cat=promo">Promo Spesial</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Bantuan</h4>
+          <ul>
+            <li><a href="#">Cara Berbelanja</a></li>
+            <li><a href="#">Cara Pembayaran</a></li>
+            <li><a href="#">Cara Pengiriman</a></li>
+            <li><a href="#">Kebijakan Pengembalian</a></li>
+            <li><a href="#">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Kontak</h4>
+          <ul>
+            <li><a href="tel:+628123456789">📞 0812-3456-789</a></li>
+            <li><a href="mailto:halo@sembakomart.id">✉️ halo@sembakomart.id</a></li>
+            <li><a href="#">📍 Jakarta, Indonesia</a></li>
+            <li><a href="#">⏰ Buka 08.00 - 21.00</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 SembakoMart. Hak cipta dilindungi undang-undang.</p>
+        <div class="payment-icons">
+          <span class="pay-icon">QRIS</span>
+          <span class="pay-icon">GoPay</span>
+          <span class="pay-icon">OVO</span>
+          <span class="pay-icon">DANA</span>
+          <span class="pay-icon">BCA</span>
+          <span class="pay-icon">Mandiri</span>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-wrap" id="toastWrap"></div>
+
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

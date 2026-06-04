@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Keranjang Belanja — SembakoMart</title>
+  <meta name="description" content="Keranjang belanja SembakoMart. Periksa pesanan Anda sebelum checkout.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+  <div class="announcement">
+    🎉 Gratis ongkir untuk pembelian di atas <span>Rp 100.000</span>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🌾</div>
+      <div class="nav-logo-text">
+        <span class="brand">SembakoMart</span>
+        <span class="tagline">Segar & Terpercaya</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="products.html">Produk</a></li>
+      <li><a href="products.html?cat=promo">Promo</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="cart.html" class="cart-btn active" id="cartNavBtn">
+        🛒 Keranjang
+        <span class="cart-count hidden" id="cartCount">0</span>
+      </a>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <!-- Page Banner -->
+  <div class="page-banner">
+    <h1>🛒 Keranjang Belanja</h1>
+    <p>Periksa pesanan Anda sebelum melanjutkan ke checkout</p>
+    <div class="breadcrumb">
+      <a href="index.html">Beranda</a>
+      <span>›</span>
+      <a href="products.html">Produk</a>
+      <span>›</span>
+      <span>Keranjang</span>
+    </div>
+  </div>
+
+  <!-- Cart Content -->
+  <div class="cart-page" id="cartPage">
+    <!-- Cart Items (Left) -->
+    <div>
+      <div class="cart-panel" id="cartPanel">
+        <div class="cart-panel-header">
+          <h2>🛍️ Item Pesanan <span class="cart-total-items" id="cartTotalItems">(0 item)</span></h2>
+          <button class="clear-cart-btn" id="clearCartBtn" onclick="confirmClearCart()">🗑️ Hapus Semua</button>
+        </div>
+        <div class="cart-items-list" id="cartItemsList">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Recommended Section -->
+      <div class="recommended-section" style="margin-top:1.5rem;">
+        <div class="section-header" style="text-align:left; margin-bottom:1.2rem;">
+          <span class="section-label">Mungkin Anda Suka</span>
+        </div>
+        <div class="products-grid" id="recommendedProducts" style="grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Summary (Right) -->
+    <div class="cart-summary">
+      <div class="summary-card">
+        <div class="summary-header">
+          <h3>📋 Ringkasan Pesanan</h3>
+        </div>
+        <div class="summary-body">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <span id="summarySubtotal">Rp 0</span>
+          </div>
+          <div class="summary-row discount" id="summaryDiscountRow" style="display:none;">
+            <span>🏷️ Diskon Promo</span>
+            <span id="summaryDiscount">−Rp 0</span>
+          </div>
+          <div class="summary-row shipping" id="summaryShippingRow">
+            <span>🚚 Ongkir</span>
+            <span id="summaryShipping">Rp 15.000</span>
+          </div>
+          <div class="summary-total">
+            <span class="label">Total</span>
+            <span class="amount" id="summaryTotal">Rp 0</span>
+          </div>
+
+          <!-- Promo Code -->
+          <div class="promo-input-wrap">
+            <input type="text" class="promo-input" id="promoInput" placeholder="Kode promo..." />
+            <button class="promo-apply-btn" onclick="applyPromo()">Pakai</button>
+          </div>
+          <div class="promo-success" id="promoSuccess">
+            ✅ Kode promo berhasil diterapkan! Hemat <span id="promoAmount"></span>
+          </div>
+
+          <!-- Checkout Button -->
+          <a href="checkout.html" class="checkout-btn" id="checkoutBtn">
+            🛒 Lanjut ke Checkout
+          </a>
+          <a href="products.html" class="continue-shopping">
+            ← Lanjut Belanja
+          </a>
+
+          <!-- Trust Badges -->
+          <div class="trust-badges">
+            <div class="trust-badge">🔒 Aman</div>
+            <div class="trust-badge">✅ Terjamin</div>
+            <div class="trust-badge">🚚 Cepat</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Methods Preview -->
+      <div style="background:var(--bg-card); border-radius:var(--radius-md); border:1px solid var(--border); padding:1.2rem; margin-top:1rem;">
+        <div style="font-size:0.8rem; font-weight:700; color:var(--dark); margin-bottom:0.8rem;">💳 Metode Pembayaran</div>
+        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+          <span style="background:linear-gradient(135deg,#E00025,#FF0033); color:white; border-radius:6px; padding:4px 10px; font-size:0.7rem; font-weight:800;">QRIS</span>
+          <span style="background:#00A87D; color:white; border-radius:6px; padding:4px 10px; font-size:0.7rem; font-weight:800;">GoPay</span>
+          <span style="background:#4C3494; color:white; border-radius:6px; padding:4px 10px; font-size:0.7rem; font-weight:800;">OVO</span>
+          <span style="background:#108EE9; color:white; border-radius:6px; padding:4px 10px; font-size:0.7rem; font-weight:800;">DANA</span>
+          <span style="background:#003D87; color:white; border-radius:6px; padding:4px 10px; font-size:0.7rem; font-weight:800;">BCA</span>
+          <span style="background:#003087; color:white; border-radius:6px; padding:4px 10px; font-size:0.7rem; font-weight:800;">Mandiri</span>
+          <span style="background:#555; color:white; border-radius:6px; padding:4px 10px; font-size:0.7rem; font-weight:800;">COD</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top:4rem;">
+    <div class="footer-bottom" style="max-width:1200px; margin:0 auto;">
+      <p>© 2025 SembakoMart. Hak cipta dilindungi undang-undang.</p>
+      <div class="payment-icons">
+        <span class="pay-icon">QRIS</span>
+        <span class="pay-icon">GoPay</span>
+        <span class="pay-icon">OVO</span>
+        <span class="pay-icon">DANA</span>
+        <span class="pay-icon">BCA</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>

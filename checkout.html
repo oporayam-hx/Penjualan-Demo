@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — SembakoMart</title>
+  <meta name="description" content="Selesaikan pesanan Anda di SembakoMart. Pembayaran aman via QRIS, transfer bank, dan COD.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">🌾</div>
+      <div class="nav-logo-text">
+        <span class="brand">SembakoMart</span>
+        <span class="tagline">Segar & Terpercaya</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html">Beranda</a></li>
+      <li><a href="products.html">Produk</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="cart.html" class="cart-btn" id="cartNavBtn">
+        🛒 Keranjang
+        <span class="cart-count hidden" id="cartCount">0</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Page Banner -->
+  <div class="page-banner">
+    <h1>💳 Checkout</h1>
+    <p>Lengkapi data pengiriman dan pilih metode pembayaran</p>
+    <div class="breadcrumb">
+      <a href="index.html">Beranda</a>
+      <span>›</span>
+      <a href="cart.html">Keranjang</a>
+      <span>›</span>
+      <span>Checkout</span>
+    </div>
+  </div>
+
+  <!-- Progress Steps -->
+  <div class="checkout-steps">
+    <div class="step done" id="step1">
+      <div class="step-num">✓</div>
+      <span>Keranjang</span>
+    </div>
+    <div class="step-line done"></div>
+    <div class="step active" id="step2">
+      <div class="step-num">2</div>
+      <span>Checkout</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step" id="step3">
+      <div class="step-num">3</div>
+      <span>Selesai</span>
+    </div>
+  </div>
+
+  <!-- Checkout Content -->
+  <div class="checkout-page">
+
+    <!-- LEFT: Form -->
+    <div class="checkout-form-section">
+
+      <!-- 1. Data Penerima -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <div class="checkout-card-icon">👤</div>
+          <h3>Data Penerima</h3>
+        </div>
+        <div class="checkout-card-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nama Depan <span class="required">*</span></label>
+              <input type="text" class="form-input" id="firstName" placeholder="Contoh: Budi" required>
+              <span class="error-msg" id="err-firstName">Nama depan wajib diisi</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Nama Belakang</label>
+              <input type="text" class="form-input" id="lastName" placeholder="Contoh: Santoso">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">No. WhatsApp <span class="required">*</span></label>
+              <input type="tel" class="form-input" id="phone" placeholder="08xxxxxxxxxx" required>
+              <span class="error-msg" id="err-phone">No. WhatsApp wajib diisi</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" id="email" placeholder="email@contoh.com">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Alamat Pengiriman -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <div class="checkout-card-icon">📍</div>
+          <h3>Alamat Pengiriman</h3>
+        </div>
+        <div class="checkout-card-body">
+          <div class="form-group">
+            <label class="form-label">Alamat Lengkap <span class="required">*</span></label>
+            <textarea class="form-input" id="address" placeholder="Nama jalan, nomor rumah, RT/RW..." rows="3" required></textarea>
+            <span class="error-msg" id="err-address">Alamat wajib diisi</span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Kota / Kabupaten <span class="required">*</span></label>
+              <input type="text" class="form-input" id="city" placeholder="Contoh: Jakarta Selatan" required>
+              <span class="error-msg" id="err-city">Kota wajib diisi</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Kode Pos</label>
+              <input type="text" class="form-input" id="postalCode" placeholder="Contoh: 12345" maxlength="5">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Catatan untuk Kurir</label>
+            <input type="text" class="form-input" id="notes" placeholder="Contoh: Titip di pos security, hubungi sebelum tiba...">
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Metode Pengiriman -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <div class="checkout-card-icon">🚚</div>
+          <h3>Metode Pengiriman</h3>
+        </div>
+        <div class="checkout-card-body">
+          <div class="shipping-options">
+
+            <label class="shipping-option selected" id="ship-express" onclick="selectShipping('express', 0)">
+              <input type="radio" name="shipping" value="express" checked>
+              <div class="shipping-left">
+                <div class="shipping-icon">⚡</div>
+                <div>
+                  <span class="shipping-name">Pengiriman Ekspres</span>
+                  <span class="shipping-time">Estimasi: 1-3 jam (hari ini)</span>
+                </div>
+              </div>
+              <span class="shipping-price" id="ship-express-price">
+                <span class="free-badge">GRATIS</span>
+              </span>
+            </label>
+
+            <label class="shipping-option" id="ship-same" onclick="selectShipping('same', 15000)">
+              <input type="radio" name="shipping" value="same">
+              <div class="shipping-left">
+                <div class="shipping-icon">🚗</div>
+                <div>
+                  <span class="shipping-name">Pengiriman Hari Ini</span>
+                  <span class="shipping-time">Estimasi: 3-5 jam</span>
+                </div>
+              </div>
+              <span class="shipping-price" id="ship-same-price">Rp 15.000</span>
+            </label>
+
+            <label class="shipping-option" id="ship-regular" onclick="selectShipping('regular', 8000)">
+              <input type="radio" name="shipping" value="regular">
+              <div class="shipping-left">
+                <div class="shipping-icon">📦</div>
+                <div>
+                  <span class="shipping-name">Reguler</span>
+                  <span class="shipping-time">Estimasi: 1-2 hari kerja</span>
+                </div>
+              </div>
+              <span class="shipping-price">Rp 8.000</span>
+            </label>
+
+            <label class="shipping-option" id="ship-pickup" onclick="selectShipping('pickup', 0)">
+              <input type="radio" name="shipping" value="pickup">
+              <div class="shipping-left">
+                <div class="shipping-icon">🏪</div>
+                <div>
+                  <span class="shipping-name">Ambil di Toko</span>
+                  <span class="shipping-time">Siap dalam 30 menit</span>
+                </div>
+              </div>
+              <span class="shipping-price"><span class="free-badge">GRATIS</span></span>
+            </label>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Metode Pembayaran -->
+      <div class="checkout-card">
+        <div class="checkout-card-header">
+          <div class="checkout-card-icon">💳</div>
+          <h3>Metode Pembayaran</h3>
+        </div>
+        <div class="checkout-card-body">
+          <div class="payment-methods" id="paymentMethods">
+
+            <!-- QRIS -->
+            <div class="payment-method selected" id="pay-qris" onclick="selectPayment('qris', this)">
+              <input type="radio" name="payment" value="qris" checked>
+              <div class="payment-method-header">
+                <div class="payment-left">
+                  <div class="payment-icon-wrap" style="background:linear-gradient(135deg,#FFE5E5,#FFB3B3);">
+                    <span style="font-size:1.5rem;">📱</span>
+                  </div>
+                  <div class="payment-info">
+                    <span class="payment-name">QRIS</span>
+                    <span class="payment-sub">Scan QR Code dari aplikasi e-wallet</span>
+                  </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <div class="payment-logos">
+                    <span class="payment-logo" style="background:#00A87D; color:white;">GoPay</span>
+                    <span class="payment-logo" style="background:#4C3494; color:white;">OVO</span>
+                    <span class="payment-logo" style="background:#108EE9; color:white;">DANA</span>
+                    <span class="payment-logo" style="color:var(--text-light);">+3</span>
+                  </div>
+                  <span class="payment-arrow">▼</span>
+                </div>
+              </div>
+              <!-- QRIS Detail Panel -->
+              <div class="payment-detail">
+                <div class="qris-panel">
+                  <span class="qris-label">QRIS</span>
+                  
+                  <!-- QR Code Visual -->
+                  <div class="qris-code-wrap" id="qrisCodeWrap">
+                    <canvas id="qrisCanvas" width="180" height="180"></canvas>
+                  </div>
+                  
+                  <div class="qris-amount-display">
+                    Total: <span id="qrisAmount">Rp 0</span>
+                  </div>
+                  <div class="qris-merchant">
+                    🏪 SembakoMart • ID Merchant: SMK-2025-001
+                  </div>
+
+                  <div class="qris-steps">
+                    <h5>📋 Cara Bayar via QRIS:</h5>
+                    <div class="qris-step-item">
+                      <div class="qris-step-num">1</div>
+                      <span>Buka aplikasi e-wallet favorit Anda (GoPay, OVO, DANA, ShopeePay, dll.)</span>
+                    </div>
+                    <div class="qris-step-item">
+                      <div class="qris-step-num">2</div>
+                      <span>Pilih menu <strong>Scan QR</strong> atau <strong>Bayar</strong></span>
+                    </div>
+                    <div class="qris-step-item">
+                      <div class="qris-step-num">3</div>
+                      <span>Scan QR Code di atas dan pastikan jumlah sesuai</span>
+                    </div>
+                    <div class="qris-step-item">
+                      <div class="qris-step-num">4</div>
+                      <span>Konfirmasi pembayaran dan simpan bukti transfer</span>
+                    </div>
+                  </div>
+
+                  <div class="qris-wallets">
+                    <span class="qris-wallet-badge">GoPay</span>
+                    <span class="qris-wallet-badge">OVO</span>
+                    <span class="qris-wallet-badge">DANA</span>
+                    <span class="qris-wallet-badge">ShopeePay</span>
+                    <span class="qris-wallet-badge">LinkAja</span>
+                    <span class="qris-wallet-badge">Jenius</span>
+                    <span class="qris-wallet-badge">BCA Mobile</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Transfer Bank -->
+            <div class="payment-method" id="pay-bank" onclick="selectPayment('bank', this)">
+              <input type="radio" name="payment" value="bank">
+              <div class="payment-method-header">
+                <div class="payment-left">
+                  <div class="payment-icon-wrap" style="background:linear-gradient(135deg,#E8F5E9,#C8E6C9);">
+                    <span style="font-size:1.5rem;">🏦</span>
+                  </div>
+                  <div class="payment-info">
+                    <span class="payment-name">Transfer Bank</span>
+                    <span class="payment-sub">BCA, Mandiri, BRI, BNI</span>
+                  </div>
+                </div>
+                <span class="payment-arrow">▼</span>
+              </div>
+              <div class="payment-detail">
+                <div class="bank-transfer-panel">
+                  <div class="bank-option" onclick="selectBank('BCA')">
+                    <div class="bank-info">
+                      <div class="bank-logo bca">BCA</div>
+                      <div>
+                        <div class="bank-name">Bank BCA</div>
+                        <div class="bank-va">No. Rek: 1234567890 a/n SembakoMart</div>
+                      </div>
+                    </div>
+                    <button class="bank-copy-btn" onclick="event.stopPropagation(); copyToClipboard('1234567890', 'No. rekening BCA')">📋 Salin</button>
+                  </div>
+                  <div class="bank-option" onclick="selectBank('Mandiri')">
+                    <div class="bank-info">
+                      <div class="bank-logo mandiri">MND</div>
+                      <div>
+                        <div class="bank-name">Bank Mandiri</div>
+                        <div class="bank-va">No. Rek: 9876543210 a/n SembakoMart</div>
+                      </div>
+                    </div>
+                    <button class="bank-copy-btn" onclick="event.stopPropagation(); copyToClipboard('9876543210', 'No. rekening Mandiri')">📋 Salin</button>
+                  </div>
+                  <div class="bank-option" onclick="selectBank('BRI')">
+                    <div class="bank-info">
+                      <div class="bank-logo bri">BRI</div>
+                      <div>
+                        <div class="bank-name">Bank BRI</div>
+                        <div class="bank-va">No. Rek: 5555666677 a/n SembakoMart</div>
+                      </div>
+                    </div>
+                    <button class="bank-copy-btn" onclick="event.stopPropagation(); copyToClipboard('5555666677', 'No. rekening BRI')">📋 Salin</button>
+                  </div>
+                  <div class="bank-option" onclick="selectBank('BNI')">
+                    <div class="bank-info">
+                      <div class="bank-logo bni">BNI</div>
+                      <div>
+                        <div class="bank-name">Bank BNI</div>
+                        <div class="bank-va">No. Rek: 3322114455 a/n SembakoMart</div>
+                      </div>
+                    </div>
+                    <button class="bank-copy-btn" onclick="event.stopPropagation(); copyToClipboard('3322114455', 'No. rekening BNI')">📋 Salin</button>
+                  </div>
+                </div>
+                <p style="font-size:0.75rem; color:var(--text-light); margin-top:10px; padding:0 4px;">
+                  💡 Setelah transfer, kirim bukti pembayaran via WhatsApp ke <strong>0812-3456-789</strong> untuk konfirmasi pesanan Anda.
+                </p>
+              </div>
+            </div>
+
+            <!-- COD -->
+            <div class="payment-method" id="pay-cod" onclick="selectPayment('cod', this)">
+              <input type="radio" name="payment" value="cod">
+              <div class="payment-method-header">
+                <div class="payment-left">
+                  <div class="payment-icon-wrap" style="background:linear-gradient(135deg,#FFF8E7,#FFE082);">
+                    <span style="font-size:1.5rem;">💵</span>
+                  </div>
+                  <div class="payment-info">
+                    <span class="payment-name">Bayar di Tempat (COD)</span>
+                    <span class="payment-sub">Bayar tunai saat barang tiba</span>
+                  </div>
+                </div>
+                <span class="payment-arrow">▼</span>
+              </div>
+              <div class="payment-detail">
+                <div class="cod-panel">
+                  <div class="cod-icon">💵</div>
+                  <div class="cod-info">
+                    <h5>Bayar di Tempat (COD)</h5>
+                    <p>Siapkan uang tunai sesuai total pesanan saat kurir tiba. Kurir kami akan menghubungi Anda sebelum pengiriman.</p>
+                    <p style="margin-top:6px; color:#F59E0B; font-weight:600; font-size:0.78rem;">⚠️ Pastikan ada penerima di lokasi pengiriman</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Order Summary -->
+    <div class="order-summary-sticky">
+      <div class="order-summary-card">
+        <div class="os-header">
+          <h3>📋 Ringkasan Pesanan</h3>
+          <span class="os-item-count" id="osItemCount">0 item</span>
+        </div>
+
+        <!-- Items List -->
+        <div class="os-items" id="osItems">
+          <!-- Rendered by JS -->
+        </div>
+
+        <!-- Breakdown -->
+        <div class="os-breakdown">
+          <div class="os-row">
+            <span>Subtotal</span>
+            <span id="osSubtotal">Rp 0</span>
+          </div>
+          <div class="os-row shipping">
+            <span>Ongkir</span>
+            <span id="osShipping">Gratis</span>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="os-total-row">
+          <span class="os-total-label">Total Pembayaran</span>
+          <span class="os-total-amount" id="osTotal">Rp 0</span>
+        </div>
+
+        <!-- Place Order Button -->
+        <div class="place-order-section">
+          <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">
+            <span>🛍️ Pesan Sekarang</span>
+            <span class="place-order-total" id="placeOrderTotal"></span>
+          </button>
+          <div class="security-note">
+            🔒 Transaksi aman & terenkripsi
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Success Modal -->
+  <div class="success-modal-overlay" id="successModal">
+    <div class="success-modal">
+      <div class="success-anim">🎉</div>
+      <h2>Pesanan Berhasil!</h2>
+      <p>Terima kasih telah berbelanja di SembakoMart. Pesanan Anda sedang diproses.</p>
+      <div class="order-id-badge" id="successOrderId">SMK-XXXX</div>
+      <p style="font-size:0.82rem;">Kami akan menghubungi Anda via WhatsApp untuk konfirmasi pengiriman.</p>
+      <div class="success-actions">
+        <a href="index.html" class="btn-primary">🏠 Kembali ke Beranda</a>
+        <a href="products.html" class="btn-outline" style="color:var(--primary); border-color:var(--primary);">🛍️ Belanja Lagi</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <script src="js/main.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
