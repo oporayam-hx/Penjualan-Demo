@@ -1,0 +1,23 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.iml
+
+# Uploads (user-generated)
+/uploads/
+uploads/
+
+# Logs
+*.log
+
+# Env files
+.env
+.env.*
+
+# Archives
+*.zip
+*.rar
+*.7z
+
