@@ -455,7 +455,7 @@ function validateForm() {
 // ============================================
 // PLACE ORDER
 // ============================================
-function placeOrder() {
+async function placeOrder() {
   if (window.cart.getCount() === 0) {
     showToast('Keranjang Anda kosong!', 'error', '❌');
     return;
@@ -463,7 +463,6 @@ function placeOrder() {
 
   if (!validateForm()) {
     showToast('Lengkapi data yang diperlukan!', 'error', '⚠️');
-    // Scroll to first error
     const firstError = document.querySelector('.form-input.error');
     if (firstError) {
       firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -472,14 +471,12 @@ function placeOrder() {
     return;
   }
 
-  // Show loading on button
   const btn = document.getElementById('placeOrderBtn');
   if (btn) {
     btn.disabled = true;
     btn.innerHTML = '<span>⏳ Memproses pesanan...</span>';
   }
 
-  // Build orderData
   const orderId = generateOrderId();
   const orderData = {
     id: orderId,
@@ -497,60 +494,66 @@ function placeOrder() {
     status: 'pending'
   };
 
-  // For online methods, create payment on server
   const onlineMethods = ['qris','gopay','dana','ovo'];
   if (onlineMethods.includes(selectedPayment)) {
-    // show loading on button
-    const btn = document.getElementById('placeOrderBtn');
     if (btn) { btn.disabled = true; btn.innerHTML = '<span>⏳ Membuat pembayaran...</span>'; }
 
-    createPayment(orderData).then(res => {
+    try {
+      const res = await createPayment(orderData);
       if (!res || !res.success) {
-        showToast('Gagal membuat pembayaran', 'error', '❌');
-        if (btn) { btn.disabled = false; btn.innerHTML = '<span>🛍️ Pesan Sekarang</span>'; }
-        return;
+        throw new Error(res?.error || 'Gagal membuat pembayaran');
       }
 
       const txId = res.txId;
-      // If QRIS, render QR using txId seed
       if (selectedPayment === 'qris' && res.qrPayload) {
         drawQRCode(txId);
         updateQRISAmount();
       }
 
-      // If e-wallet, open paymentUrl
       if (res.paymentUrl && selectedPayment !== 'qris') {
         window.open(res.paymentUrl, '_blank');
       }
 
-      // Poll status
-      pollPaymentStatus(txId, (status) => {
+      pollPaymentStatus(txId, async (status) => {
         if (status === 'paid') {
-          // Save order and clear cart
-          const orders = JSON.parse(localStorage.getItem('sembako_orders') || '[]');
-          orders.push(orderData);
-          localStorage.setItem('sembako_orders', JSON.stringify(orders));
+          await saveOrderToServer({ ...orderData, status: 'paid' });
           window.cart.clearCart();
           showSuccessModal(orderId);
         } else if (status === 'failed') {
           showToast('Pembayaran gagal', 'error', '❌');
         }
       });
-
-    }).catch(err => {
+    } catch (err) {
       console.error(err);
       showToast('Terjadi kesalahan saat membuat pembayaran', 'error', '❌');
-    });
+      if (btn) { btn.disabled = false; btn.innerHTML = '<span>🛍️ Pesan Sekarang</span>'; }
+    }
 
     return;
   }
 
-  // Fallback for COD / bank transfer — place order immediately
-  const orders = JSON.parse(localStorage.getItem('sembako_orders') || '[]');
-  orders.push(orderData);
-  localStorage.setItem('sembako_orders', JSON.stringify(orders));
-  window.cart.clearCart();
-  showSuccessModal(orderId);
+  try {
+    await saveOrderToServer(orderData);
+    window.cart.clearCart();
+    showSuccessModal(orderId);
+  } catch (err) {
+    console.error(err);
+    showToast('Gagal menyimpan pesanan', 'error', '❌');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<span>🛍️ Pesan Sekarang</span>'; }
+  }
+}
+
+async function saveOrderToServer(orderData) {
+  const res = await fetch('/api/orders.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderData)
+  });
+  const json = await res.json();
+  if (!json.success) {
+    throw new Error(json.error || 'Failed to save order');
+  }
+  return json;
 }
 
 function createPayment(orderData) {
@@ -632,7 +635,17 @@ function initInputListeners() {
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   if (path.includes('checkout')) {
-    initCheckoutPage();
-    initInputListeners();
+    if (window.appReady && window.appReady.then) {
+      window.appReady.then(() => {
+        initCheckoutPage();
+        initInputListeners();
+      }).catch(() => {
+        initCheckoutPage();
+        initInputListeners();
+      });
+    } else {
+      initCheckoutPage();
+      initInputListeners();
+    }
   }
 });

@@ -68,32 +68,33 @@ const CATEGORIES = [
   { id: 'kebersihan', name: 'Kebersihan', emoji: '🧴', count: 0 },
 ];
 
-function loadProducts() {
-  const custom = JSON.parse(localStorage.getItem('sembako_custom_products') || '[]');
-  const edited = JSON.parse(localStorage.getItem('sembako_edited_products') || '{}');
-  const deleted = JSON.parse(localStorage.getItem('sembako_deleted_products') || '[]');
-  
+async function loadProducts() {
   PRODUCTS.length = 0;
-  
-  // Normalize deleted IDs to strings for robust comparison
-  const deletedIds = (deleted || []).map(String);
 
-  // Load base products
-  BASE_PRODUCTS.forEach(p => {
-    if (deletedIds.includes(String(p.id))) return;
-    
-    if (edited[p.id]) {
-      PRODUCTS.push({ ...p, ...edited[p.id] });
+  try {
+    const res = await fetch('/api/products.php');
+    const json = await res.json();
+    if (json.success && Array.isArray(json.products)) {
+      json.products.forEach(p => {
+        PRODUCTS.push({
+          ...p,
+          originalPrice: p.originalPrice === null ? null : Number(p.originalPrice),
+          price: Number(p.price) || 0,
+          rating: Number(p.rating) || 0,
+          reviews: Number(p.reviews) || 0,
+          stock: Number(p.stock) || 0,
+          featured: !!p.featured,
+          isNew: !!p.isNew,
+          desc: p.desc ?? p.description ?? '',
+        });
+      });
     } else {
-      PRODUCTS.push({ ...p });
+      throw new Error('Invalid product response');
     }
-  });
-  
-  // Load custom products
-  custom.forEach(p => {
-    if (deletedIds.includes(String(p.id))) return;
-    PRODUCTS.push(p);
-  });
+  } catch (err) {
+    console.warn('Failed to load products from server, falling back to local data', err);
+    BASE_PRODUCTS.forEach(p => PRODUCTS.push({ ...p }));
+  }
 
   updateCategoryCounts();
 }
@@ -597,14 +598,21 @@ function buyNow() {
 // ============================================
 // INIT
 // ============================================
-document.addEventListener('DOMContentLoaded', () => {
-  initNavbar();
-  window.cart.updateCartUI();
-  initFadeAnimations();
+window.appReady = loadProducts();
 
-  // Determine page
-  const path = window.location.pathname;
-  if (path.includes('index') || path.endsWith('/') || path.endsWith('\\')) {
-    initHomePage();
-  }
+document.addEventListener('DOMContentLoaded', () => {
+  window.appReady.then(() => {
+    initNavbar();
+    window.cart.updateCartUI();
+    initFadeAnimations();
+
+    const path = window.location.pathname;
+    if (path.includes('index') || path.endsWith('/') || path.endsWith('\\')) {
+      initHomePage();
+    }
+  }).catch(() => {
+    initNavbar();
+    window.cart.updateCartUI();
+    initFadeAnimations();
+  });
 });

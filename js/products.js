@@ -284,6 +284,10 @@ function debounce(fn, delay) {
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   if (path.includes('products')) {
-    initProductsPage();
+    if (window.appReady && window.appReady.then) {
+      window.appReady.then(initProductsPage).catch(initProductsPage);
+    } else {
+      initProductsPage();
+    }
   }
 });

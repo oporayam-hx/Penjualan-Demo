@@ -14,20 +14,36 @@ function handleLogout() {
 }
 
 // ============================================
+// ADMIN CONFIG
+// ============================================
+const ADMIN_KEY = 'sembako-admin';
+
+// ============================================
 // STATISTICS & UTILS
 // ============================================
-function updateDashboardStats() {
+async function updateDashboardStats() {
   const statTotalProducts = document.getElementById('statTotalProducts');
   const statCustomProducts = document.getElementById('statCustomProducts');
   const statTotalOrders = document.getElementById('statTotalOrders');
 
   if (statTotalProducts) statTotalProducts.textContent = PRODUCTS.length;
 
-  const custom = JSON.parse(localStorage.getItem('sembako_custom_products') || '[]');
-  if (statCustomProducts) statCustomProducts.textContent = custom.length;
+  const customProducts = PRODUCTS.filter(p => !BASE_PRODUCTS.some(bp => String(bp.id) === String(p.id)));
+  if (statCustomProducts) statCustomProducts.textContent = customProducts.length;
 
-  const orders = JSON.parse(localStorage.getItem('sembako_orders') || '[]');
-  if (statTotalOrders) statTotalOrders.textContent = orders.length;
+  if (statTotalOrders) {
+    try {
+      const res = await fetch('/api/orders.php?adminKey=' + encodeURIComponent(ADMIN_KEY));
+      const json = await res.json();
+      if (json.success && Array.isArray(json.orders)) {
+        statTotalOrders.textContent = json.orders.length;
+      } else {
+        statTotalOrders.textContent = '0';
+      }
+    } catch (err) {
+      statTotalOrders.textContent = '0';
+    }
+  }
 }
 
 // ============================================
@@ -253,7 +269,7 @@ function clearImageUpload() {
   if (previewContainer) previewContainer.style.display = 'none';
 }
 
-function saveProduct(e) {
+async function saveProduct(e) {
   e.preventDefault();
 
   const idInput = document.getElementById('editProductId').value;
@@ -284,67 +300,43 @@ function saveProduct(e) {
     desc,
     featured,
     isNew,
-    rating: 5.0, // default rating
-    reviews: 0   // default reviews count
+    rating: 5.0,
+    reviews: 0
   };
 
-  if (idInput) {
-    // ============================================
-    // EDITING EXISTING PRODUCT
-    // ============================================
-    const prodId = parseInt(idInput);
-      const isBaseProduct = BASE_PRODUCTS.some(bp => String(bp.id) === String(prodId));
+  const headers = { 'Content-Type': 'application/json' };
+  let result;
 
-    if (isBaseProduct) {
-      // Save to edited dictionary
-      const edited = JSON.parse(localStorage.getItem('sembako_edited_products') || '{}');
-      edited[prodId] = { id: prodId, ...productData };
-      localStorage.setItem('sembako_edited_products', JSON.stringify(edited));
+  try {
+    if (idInput) {
+      const prodId = parseInt(idInput);
+      result = await fetch('/api/products.php', {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify({ id: prodId, adminKey: ADMIN_KEY, ...productData })
+      });
     } else {
-      // Save to custom products list
-      const custom = JSON.parse(localStorage.getItem('sembako_custom_products') || '[]');
-        const index = custom.findIndex(p => String(p.id) === String(prodId));
-      if (index !== -1) {
-        // If image changed and old image is stored on server, delete old file
-        const oldImage = custom[index].image;
-        if (oldImage && oldImage.startsWith('uploads/') && oldImage !== productData.image) {
-          fetch('/api/delete_upload.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ path: oldImage })
-          }).catch(() => {});
-        }
-        custom[index] = { id: prodId, ...productData };
-        localStorage.setItem('sembako_custom_products', JSON.stringify(custom));
-      }
+      result = await fetch('/api/products.php', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ adminKey: ADMIN_KEY, ...productData })
+      });
     }
-    alert('Produk berhasil diperbarui!');
-  } else {
-    // ============================================
-    // CREATING NEW PRODUCT
-    // ============================================
-    const custom = JSON.parse(localStorage.getItem('sembako_custom_products') || '[]');
-    
-    // Generate a unique ID (greater than 30)
-    let newId = Date.now();
-    
-    const newProduct = {
-      id: newId,
-      ...productData
-    };
 
-    custom.push(newProduct);
-    localStorage.setItem('sembako_custom_products', JSON.stringify(custom));
-    alert('Produk baru berhasil ditambahkan!');
+    const json = await result.json();
+    if (!json.success) {
+      throw new Error(json.error || 'Failed to save product');
+    }
+
+    await loadProducts();
+    renderProductsTable();
+    await updateDashboardStats();
+    alert(idInput ? 'Produk berhasil diperbarui!' : 'Produk baru berhasil ditambahkan!');
+    closeProductModal();
+  } catch (err) {
+    console.error(err);
+    alert('Gagal menyimpan produk: ' + err.message);
   }
-
-  // Reload products database from main.js
-  loadProducts();
-
-  // Refresh view
-  renderProductsTable();
-  updateDashboardStats();
-  closeProductModal();
 }
 
 function editProduct(productId) {
@@ -354,58 +346,61 @@ function editProduct(productId) {
   }
 }
 
-function deleteProduct(productId) {
+async function deleteProduct(productId) {
   const prod = PRODUCTS.find(p => String(p.id) === String(productId));
   if (!prod) return;
 
   const confirmed = confirm(`Apakah Anda yakin ingin menghapus produk "${prod.name}"?`);
   if (!confirmed) return;
 
-    const isBaseProduct = BASE_PRODUCTS.some(bp => String(bp.id) === String(productId));
-
-  // Add to deleted IDs list
-  const deleted = JSON.parse(localStorage.getItem('sembako_deleted_products') || '[]');
-  if (!deleted.includes(productId)) {
-    deleted.push(String(productId));
-    localStorage.setItem('sembako_deleted_products', JSON.stringify(deleted));
+  if (prod.image && prod.image.startsWith('uploads/')) {
+    fetch('/api/delete_upload.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: prod.image })
+    }).catch(() => {});
+    const thumb = prod.image.replace(/([^\/]+)$/, 'thumb_$1');
+    fetch('/api/delete_upload.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: thumb })
+    }).catch(() => {});
   }
 
-  // Also clean up from custom products if it's there
-  if (!isBaseProduct) {
-    let custom = JSON.parse(localStorage.getItem('sembako_custom_products') || '[]');
-    // Delete uploaded image file on server if exists
-    const prodEntry = custom.find(p => String(p.id) === String(productId));
-    if (prodEntry && prodEntry.image && prodEntry.image.startsWith('uploads/')) {
-      fetch('/api/delete_upload.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: prodEntry.image })
-      }).catch(() => {});
-      // Also attempt delete thumbnail
-      const thumb = prodEntry.image.replace(/([^\/]+)$/, 'thumb_$1');
-      fetch('/api/delete_upload.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: thumb })
-      }).catch(() => {});
+  try {
+    const res = await fetch('/api/products.php?id=' + encodeURIComponent(productId), {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ adminKey: ADMIN_KEY })
+    });
+    const json = await res.json();
+    if (!json.success) {
+      throw new Error(json.error || 'Failed to delete product');
     }
-    custom = custom.filter(p => String(p.id) !== String(productId));
-    localStorage.setItem('sembako_custom_products', JSON.stringify(custom));
+    await loadProducts();
+    renderProductsTable();
+    await updateDashboardStats();
+    alert('Produk berhasil dihapus!');
+  } catch (err) {
+    console.error(err);
+    alert('Gagal menghapus produk: ' + err.message);
   }
-
-  // Reload database
-  loadProducts();
-
-  // Refresh view
-  renderProductsTable();
-  updateDashboardStats();
-  alert('Produk berhasil dihapus!');
 }
 
 // ============================================
 // INITIALIZE
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
-  updateDashboardStats();
-  renderProductsTable();
+  if (window.appReady && window.appReady.then) {
+    window.appReady.then(async () => {
+      renderProductsTable();
+      await updateDashboardStats();
+    }).catch(async () => {
+      renderProductsTable();
+      await updateDashboardStats();
+    });
+  } else {
+    renderProductsTable();
+    updateDashboardStats();
+  }
 });

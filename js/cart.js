@@ -251,7 +251,17 @@ function renderRecommended(cartItems) {
 document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname;
   if (path.includes('cart')) {
-    renderCart();
-    injectModal();
+    if (window.appReady && window.appReady.then) {
+      window.appReady.then(() => {
+        renderCart();
+        injectModal();
+      }).catch(() => {
+        renderCart();
+        injectModal();
+      });
+    } else {
+      renderCart();
+      injectModal();
+    }
   }
 });
